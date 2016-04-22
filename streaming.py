@@ -5,9 +5,13 @@ class Streamer(StreamListener):
     """ A listener handles tweets that are received from the stream.
     This is a basic listener that just prints received tweets to stdout.
     """
+    def __init__(self, db):
+        self.db = db
+
     def on_data(self, data):
         jsonData = json.loads(data)
-        print(jsonData['coordinates'])
+        self.db.insertTweet(jsonData)
+        print(str(jsonData['id']) + " - " + str(jsonData['user']['screen_name']) + " - " + str(jsonData['coordinates']))
         if jsonData['coordinates'] != None:
             print(jsonData['text'])
             print(jsonData['created_at'])
