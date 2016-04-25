@@ -1,4 +1,5 @@
 from couchdb import design, Server
+import time
 
 dbname = 'raw_tweets'
 
@@ -15,7 +16,7 @@ class DBInterface:
             # this command will throw an exception if the db already exists
             db = self.couch.create(dbname)
             mapFunc = 'function(doc) { emit(doc._id, doc._id); }'
-            view = design.ViewDefinition('harvster', 'min', mapFunc)
+            view = design.ViewDefinition('harvester', 'min', mapFunc)
             view.sync(db)
         except Exception as e:
             print('Error creating database (probably because it already exists)')

@@ -9,7 +9,8 @@ class Searcher:
         # first get the lowest tweet, we assume we need to fetch more tweets
         # before this tweet
         earliestTweet = self.db.earliestId()
-        print("Fetching tweets before: " + earliestTweet)
+        if earliestTweet != None:
+            print("Fetching tweets before: " + earliestTweet)
 
         # iterate over results, see how many we can fetch
         max_id = earliestTweet
