@@ -37,8 +37,8 @@ mode = sys.argv[1]
 
 if mode == 'search' or mode == 'both':
     # start searching for all tweets going back a week
-    sf = Searcher(api, db)
-    sf.fetch(melbourneRadial)
+    sfThread = Searcher(api, db, melbourneRadial)
+    sfThread.start()
 
 if mode == 'stream' or mode == 'both':
     # start streaming tweets

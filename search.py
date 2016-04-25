@@ -1,11 +1,14 @@
 import time
+from threading import Thread
 
-class Searcher:
-    def __init__(self, api, db):
+class Searcher(Thread):
+    def __init__(self, api, db, geo):
+        Thread.__init__(self)
         self.api = api
         self.db = db
+        self.geo = geo
 
-    def fetch(self, geo):
+    def run(self):
         # first get the lowest tweet, we assume we need to fetch more tweets
         # before this tweet
         earliestTweet = self.db.earliestId()
@@ -17,7 +20,7 @@ class Searcher:
         count = 0
         while True:
             time.sleep(4)
-            results = self.api.search(geocode=geo, count=100, result_type="recent", max_id=max_id)
+            results = self.api.search(geocode=self.geo, count=100, result_type="recent", max_id=max_id)
             bulk_tweets = []
 
             for result in results:
