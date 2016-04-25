@@ -1,13 +1,17 @@
 #!/usr/bin/python3
 import base64
 import sys
+import os
 import tweepy
 from database import DBInterface
 from streaming import Streamer
 from search import Searcher
 
+dbhost = os.environ.get('DBHOST') or '127.0.0.1'
+dbport = os.environ.get('DBPORT') or '5984'
+
 # database host
-dbhost = 'http://localhost:5984/'
+dbstring = 'http://' + dbhost + ':' + dbport + '/'
 
 # constants for searching
 melbourneRadial = "-37.814107,144.963280,100km"
@@ -21,7 +25,7 @@ thirdHidden = base64.b64decode("MjgwOTIyNTk0LXB4dTBtMnNqR01xeUU3ZTZhdmFOUUk0bmlD
 fourthHidden = base64.b64decode("aVV4cVk3UjNCVE5lTWN6NmZRakloczJuYTRqbjV6RUx5cmtYdGdTYTFUNGs3").decode("utf-8")
 
 # create the interface to the database
-db = DBInterface(dbhost)
+db = DBInterface(dbstring)
 
 # authenticate
 auth = tweepy.OAuthHandler(firstHidden, secondHidden)
