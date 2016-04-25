@@ -1,9 +1,24 @@
 import couchdb
 
+dbname = 'raw_tweets'
+
 class DBInterface:
     def __init__(self, dbhost):
         self.couch = couchdb.Server(dbhost)
-        self.rawDB = self.couch['raw_tweets']
+        # setup the database incase it isn't already
+        self.setupDB()
+        # connect to the database
+        self.rawDB = self.couch[dbname]
+
+    def setupDB(self):
+        try:
+            # this command will throw an exception if the db already exists
+            db = self.couch.create(dbname)
+            mapFunc = 'function(doc) { emit(doc._id, doc._id); }'
+            view = couchdb.design.ViewDefinition('harvster', 'min', mapFunc)
+            view.sync(db)
+        except:
+            pass
 
     def insertTweet(self, tweetDoc):
         tweetDoc['_id'] = tweetDoc['id_str']
