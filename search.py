@@ -19,24 +19,29 @@ class Searcher(Thread):
         max_id = earliestTweet
         count = 0
         while True:
-            time.sleep(4)
-            results = self.api.search(geocode=self.geo, count=100, result_type="recent", max_id=max_id)
-            bulk_tweets = []
+            time.sleep(5)
+            try:
+                results = self.api.search(geocode=self.geo, count=100, result_type="recent", max_id=max_id)
+                bulk_tweets = []
 
-            for result in results:
-                # print(result.text)
-                # print(result.created_at)
-                if result.coordinates:
-                    print(str(result.id) + str(result.coordinates))
-                bulk_tweets.append(result._json)
-                max_id = result.id
+                for result in results:
+                    # print(result.text)
+                    # print(result.created_at)
+                    if result.coordinates:
+                        print(str(result.id) + str(result.coordinates))
+                    bulk_tweets.append(result._json)
+                    max_id = result.id
 
-            # bulk insert all the tweets
-            self.db.bulkInsert(bulk_tweets)
+                # bulk insert all the tweets
+                self.db.bulkInsert(bulk_tweets)
 
-            count += len(results)
-            print(result.created_at)
-            print(count)
-            if len(results) == 0:
-                print("gracefully finishing")
-                break
+                count += len(results)
+                print(result.created_at)
+                print(count)
+                if len(results) == 0:
+                    print("gracefully finishing")
+                    break
+            except Exception as e:
+                print('error running search, trying again in 5 seconds')
+                print(str(e))
+                pass
