@@ -1,10 +1,10 @@
-import couchdb
+from couchdb import design, Server
 
 dbname = 'raw_tweets'
 
 class DBInterface:
     def __init__(self, dbhost):
-        self.couch = couchdb.Server(dbhost)
+        self.couch = Server(dbhost)
         # setup the database incase it isn't already
         self.setupDB()
         # connect to the database
@@ -15,9 +15,11 @@ class DBInterface:
             # this command will throw an exception if the db already exists
             db = self.couch.create(dbname)
             mapFunc = 'function(doc) { emit(doc._id, doc._id); }'
-            view = couchdb.design.ViewDefinition('harvster', 'min', mapFunc)
+            view = design.ViewDefinition('harvster', 'min', mapFunc)
             view.sync(db)
-        except:
+        except Exception as e:
+            print('Error creating database (probably because it already exists)')
+            print(str(e))
             pass
 
     def insertTweet(self, tweetDoc):
