@@ -1,4 +1,5 @@
 from couchdb import design, Server
+import couchdb
 import time
 
 dbname = 'raw_tweets'
@@ -27,8 +28,9 @@ class DBInterface:
         tweetDoc['_id'] = tweetDoc['id_str']
         try:
             self.rawDB.save(tweetDoc)
-        except couchdb.http.ResourceConflict:
+        except Exception as e:
             print("Update conflict: "  + tweetDoc['id_str'])
+            print(str(e))
             pass
 
     def bulkInsert(self, tweetDocs):
